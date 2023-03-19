@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Formulář pro imaginární nákup </title>
+  </head>
+  <body>
+    <h1>Formulář pro imaginární nákup</h1>
+    
+		<form method="post" action="#" onsubmit="return showRecap();">
+			<label for="jmeno">Jméno:</label>
+			<input type="text" id="jmeno" name="jmeno" required><br>
+	  
+			<label for="prijmeni">Příjmení:</label>
+			<input type="text" id="prijmeni" name="prijmeni" required><br>
+	  
+			<label for="email">E-mail pro zaslání nákupu:</label>
+			<input type="email" id="email" name="email" required><br>
+      <h2>Super produkt</h2>
+      <p>Cena: 100 Kč</p>
+      <label for="produkt1-kusy">Počet kusů:</label>
+      <input type="number" id="produkt1-kusy" name="produkt1-kusy" value="0" min="0"><br>
+
+      <h2>Cool produkt</h2>
+      <p>Cena: 200 Kč</p>
+      <label for="produkt2-kusy">Počet kusů:</label>
+      <input type="number" id="produkt2-kusy" name="produkt2-kusy" value="0" min="0"><br>
+
+      <h2>Nejlepší produkt na světě</h2>
+      <p>Cena: 300 Kč</p>
+      <label for="produkt3-kusy">Počet kusů:</label>
+      <input type="number" id="produkt3-kusy" name="produkt3-kusy" value="0" min="0"><br>
+
+      <h2>Celková cena: <span id="celkem">0</span> Kč</h2>
+
+	<button type="button" onclick="zobrazitVysledky()">Zobrazit rekapitulaci</button>
+
+ 
+    </form>
+    
+
+    <script>
+      const produkt1Kusy = document.getElementById('produkt1-kusy');
+      const produkt2Kusy = document.getElementById('produkt2-kusy');
+      const produkt3Kusy = document.getElementById('produkt3-kusy');
+      const celkem = document.getElementById('celkem');
+
+      function aktualizovatCenu() {
+        const cenaProdukt1 = 100;
+        const cenaProdukt2 = 200;
+        const cenaProdukt3 = 300;
+
+        const pocetProdukt1 = parseInt(produkt1Kusy.value);
+        const pocetProdukt2 = parseInt(produkt2Kusy.value);
+        const pocetProdukt3 = parseInt(produkt3Kusy.value);
+
+        const celkovaCena = pocetProdukt1 * cenaProdukt1 + pocetProdukt2 * cenaProdukt2 + pocetProdukt3 * cenaProdukt3;
+
+        celkem.innerHTML = celkovaCena;
+      }
+
+      produkt1Kusy.addEventListener('input', aktualizovatCenu);
+      produkt2Kusy.addEventListener('input', aktualizovatCenu);
+      produkt3Kusy.addEventListener('input', aktualizovatCenu);
+    </script>
+
+
+
+  </body>
+</html>
