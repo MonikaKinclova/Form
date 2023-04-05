@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rekapitulace</title>
+</head>
+<body>
+    <h1>Rekapitulace nefunguje.. </h1>
+    <h2>proto jsem psala ať si zkontroluješ údaje před odesláním formuláře :-)</h2>
+    <p>Jméno: <span id="jmeno"></span></p>
+    <p>Počet kusů produktu: <span id="produkty"></span></p>
+    <p>Celková cena: <span id="celkem"></span> Kč</p>
+    <script src="script.js"></script>
+    <div id="data-container"></div>
+
+<script>
+const savedData = localStorage.getItem("myData");
+document.getElementById("data-container").innerHTML = savedData;
+</script>
+
+</body>
+</html>
