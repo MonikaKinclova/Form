@@ -74,7 +74,7 @@ function aktualizovatCenu() {
 
   const selectedCurrency = document.getElementById('mena').value;
   const exchangeRate = exchangeRates[selectedCurrency];
-  const totalPrice = celkovaCena / exchangeRate;
+  const totalPrice = celkovaCena * exchangeRate;
 
   celkem.innerHTML = celkovaCena;
   celkemBezDPH.innerHTML = cenaBezDPH.toFixed(2);
