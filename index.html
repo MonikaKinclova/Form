@@ -15,9 +15,9 @@
     <h2>Nejlepší produkt na světě</h2>
     <p>Cena: 300 Kč</p>
     <label for="produkt3-kusy">Počet kusů:</label>
-    <input type="number" id="produkt3-kusy" name="produkt3-kusy" min="0" placeholder="Zadejte počet kusů"><br>
+    <input type="number" id="produkt3-kusy" name="produkt3-kusy" min="0" placeholder="Zadejte počet kusů" required><br>
     <h2 id="celkova-cena">Celková cena: <span id="celkem">0</span> Kč</h2>
-    <label for="mena">Volba jiné měny:</label>
+    <label for="mena">Volba jiné měny (celková cena bude přepčítana dle aktuální kurzu ČNB k dnešnímu dni):</label>
     <select id="mena" onchange="aktualizovatCenu()">
       <option value="CZK" selected>Kč</option>
       <option value="USD">USD</option>
@@ -102,13 +102,15 @@
     const pocetProdukt3 = localStorage.getItem('pocetProdukt3');
     document.localStorage.getItem('jmeno').innerHTML = jmeno;
     document.localStorage.getItem('pocetProdukt3').innerHTML = pocetProdukt3;
+    
 
     function ulozitDoLocalStorage() {
       const jmeno = document.getElementById("jmeno").value;
       const pocetProdukt3 = parseInt(document.getElementById("produkt3-kusy").value);
       const celkovaCena = parseInt(document.getElementById('celkem').innerHTML);
       const mena = document.getElementById('mena').value;
-      const totalPrice = parseInt(getElementById ('totalPrice').value);
+      
+      const totalPrice = parseInt(localStorage.getItem('totalPrice'));
 
       localStorage.setItem('celkovaCena', celkovaCena);
       localStorage.setItem('jmeno', jmeno);
