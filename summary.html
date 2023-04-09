@@ -1,21 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Rekapitulace</title>
-</head>
-<body>
-    <h1>Rekapitulace nefunguje.. </h1>
-    <h2>proto jsem psala ať si zkontroluješ údaje před odesláním formuláře :-)</h2>
+  <head>
+    <title>Rekapitulace objednávky</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <h1>Rekapitulace objednávky</h1>
     <p>Jméno: <span id="jmeno"></span></p>
-    <p>Počet kusů produktu: <span id="produkty"></span></p>
+    <p>Nejlepší produkt na světě - počet kusů: <span id="pocetProdukt3"></span></p>
     <p>Celková cena: <span id="celkem"></span> Kč</p>
-    <script src="script.js"></script>
-    <div id="data-container"></div>
+    <p>Cena bez DPH: <span id="bez-dph"></span> Kč</p>
+    <p>Celková cena v libovolné měně: <span id="totalPrice"></span></p>
+    <p>Zvolená měna: <span id="mena"></span></p> 
+    <button onclick="window.location.href = 'THX.html'">Odeslat</button>
 
-<script>
-const savedData = localStorage.getItem("myData");
-document.getElementById("data-container").innerHTML = savedData;
-</script>
-
-</body>
+    <script>
+      
+        const jmeno = localStorage.getItem('jmeno');
+        const pocetProdukt3 = localStorage.getItem('pocetProdukt3');
+        const celkem = localStorage.getItem('celkovaCena');
+        const cenaBezDPH = celkem / (1 + 21 / 100);
+        const mena = localStorage.getItem('mena');
+        const totalPrice = localStorage.getItem('totalPrice');
+      
+        
+  
+        document.getElementById('jmeno').textContent = jmeno;
+        document.getElementById('pocetProdukt3').textContent = pocetProdukt3;
+        document.getElementById('celkem').textContent = celkem;
+        document.getElementById('bez-dph').textContent = cenaBezDPH.toFixed(2);
+        document.getElementById('mena').textContent = mena;
+        document.getElementById('totalPrice').textContent = totalPrice;
+      
+      </script>
+  </body>
 </html>
