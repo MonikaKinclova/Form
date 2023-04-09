@@ -1,94 +1,128 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Formulář pro imaginární nákup </title>
-    <link rel="stylesheet" type="text/css" href="style.css">
 
-  </head>
-  <body>
-    <h1>Formulář pro imaginární nákup</h1>
-    
-    <form method="post" action="summary.html">
+<head>
+  <title>Formulář pro imaginární nákup </title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
 
-		<label for="jmeno">Jméno:</label>
-		<input type="text" id="jmeno" name="jmeno" required><br>
+<body>
+  <h1>Formulář pro imaginární nákup</h1>
+  <form method="post" action="summary.html" onsubmit="return validateForm();ulozitDoLocalStorage();">
+    <label for="jmeno">Jméno:</label>
+    <input type="text" id="jmeno" name="jmeno" required><br>
 
-      <h2>Nejlepší produkt na světě</h2>
-      <p>Cena: 300 Kč</p>
-      <label for="produkt3-kusy">Počet kusů:</label>
-      <input type="number" id="produkt3-kusy" name="produkt3-kusy" value="0" min="0"><br>
-      <h2 id="celkova-cena">Celková cena: <span id="celkem">0</span> Kč</h2>
-      <label for="mena">Volba jiné měny:</label>
-      <select id="mena" onchange="aktualizovatCenu()">
-        <option value="CZK" selected>Kč</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="GBP">GBP</option>
-      </select>
+    <h2>Nejlepší produkt na světě</h2>
+    <p>Cena: 300 Kč</p>
+    <label for="produkt3-kusy">Počet kusů:</label>
+    <input type="number" id="produkt3-kusy" name="produkt3-kusy" min="0" placeholder="Zadejte počet kusů"><br>
+    <h2 id="celkova-cena">Celková cena: <span id="celkem">0</span> Kč</h2>
+    <label for="mena">Volba jiné měny:</label>
+    <select id="mena" onchange="aktualizovatCenu()">
+      <option value="CZK" selected>Kč</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="GBP">GBP</option>
+    </select>
 
-      <h4>Cena bez DPH: <span id="bez-dph">0</span> Kč</h4>
-      <h4>Celková cena v libovolné měně: <span id="currencyDisplay">0</span> </h4>
-      <h4>Před odesláním formuláře si zkontrolujte zadané údaje, později to již nebude možné. </h4>
+    <h4>Cena bez DPH: <span id="bez-dph">0</span> Kč</h4>
+    <h4>Celková cena v libovolné měně: <span id="currencyDisplay">0</span> </h4>
+   
+    <h4>Před odesláním formuláře si zkontrolujte zadané údaje. </h4>
 
-      
-      <button type="button" onclick="zobrazitRekapitulaci()">Zobrazit rekapitulaci</button>
+    <button type="button" onclick="zobrazitRekapitulaci(), ulozitDoLocalStorage()">Zobrazit rekapitulaci</button>
 
-    </form>
-  
-    <script>
+  </form>
 
-const currency = 'EUR';
-const url = 'https://api.exchangerate-api.com/v4/latest/CZK';
+  <script>
+    const currency = 'EUR';
+    const url = 'https://api.exchangerate-api.com/v4/latest/CZK';
+    const currencyDisplay = document.getElementById('currencyDisplay');
+    const exchangeRates = {};
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        exchangeRates['CZK'] = 1;
+        exchangeRates['USD'] = data.rates['USD'];
+        exchangeRates['EUR'] = data.rates['EUR'];
+        exchangeRates['GBP'] = data.rates['GBP'];
+      })
+      .catch(error => {
+        console.error(error);
+        kurzElement.innerHTML = 'Nepodařilo se načíst kurz';
+      });
+
+    const produkt3Kusy = document.getElementById('produkt3-kusy');
+    const celkem = document.getElementById('celkem');
+    const celkemBezDPH = document.getElementById('bez-dph');
+    const dph = 21;
+    const celkovaCena = 0;
+
+    function aktualizovatCenu() {
+      const cenaProdukt3 = 300;
+      const pocetProdukt3 = parseInt(produkt3Kusy.value);
+
+      const celkovaCena = pocetProdukt3 * cenaProdukt3;
+      const cenaBezDPH = celkovaCena / (1 + dph / 100);
+      const cenaSDPH = celkovaCena * (1 + dph / 100);
+
+      const selectedCurrency = document.getElementById('mena').value;
+      const exchangeRate = exchangeRates[selectedCurrency];
+      const totalPrice = celkovaCena * exchangeRate;
+
+      celkem.innerHTML = celkovaCena;
+      celkemBezDPH.innerHTML = cenaBezDPH.toFixed(2);
+      currencyDisplay.innerHTML = totalPrice.toFixed(2) + ' ' + selectedCurrency;
+      localStorage.setItem('totalPrice', totalPrice);
+    }
+
+    function zobrazitRekapitulaci() {
+      window.location.href = "summary.html";
+    }
+
+    produkt3Kusy.addEventListener('input', aktualizovatCenu);
+
+  </script>
+
+  <script>
+    function validateForm() {
+      const jmeno = document.getElementById("jmeno").value;
+      const pocetProdukt3 = parseInt(document.getElementById("produkt3-kusy").value);
+
+      if (pocetProdukt3 <= 0) {
+        alert("Počet kusů musí být větší než nula.");
+        return false;
+      }
+
+      return true;
+    }
+
+    const jmeno = localStorage.getItem('jmeno');
+    const pocetProdukt3 = localStorage.getItem('pocetProdukt3');
+    document.localStorage.getItem('jmeno').innerHTML = jmeno;
+    document.localStorage.getItem('pocetProdukt3').innerHTML = pocetProdukt3;
+
+    function ulozitDoLocalStorage() {
+      const jmeno = document.getElementById("jmeno").value;
+      const pocetProdukt3 = parseInt(document.getElementById("produkt3-kusy").value);
+      const celkovaCena = parseInt(document.getElementById('celkem').innerHTML);
+      const mena = document.getElementById('mena').value;
+      const totalPrice = parseInt(getElementById ('totalPrice').value);
+
+      localStorage.setItem('celkovaCena', celkovaCena);
+      localStorage.setItem('jmeno', jmeno);
+      localStorage.setItem('pocetProdukt3', pocetProdukt3);
+      localStorage.setItem('mena', mena);
+      localStorage.setItem('totalPrice', totalPrice);
+
+    }
+
+    const ulozitButton = document.getElementById("ulozit-button");
+    ulozitButton.addEventListener("click", ulozitDoLocalStorage);
+  </script>
 
 
-const exchangeRates = {};
+</body>
 
-
-fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    exchangeRates['CZK'] = 1;
-    exchangeRates['USD'] = data.rates['USD'];
-    exchangeRates['EUR'] = data.rates['EUR'];
-    exchangeRates['GBP'] = data.rates['GBP'];
-  })
-  .catch(error => {
-    console.error(error);
-    kurzElement.innerHTML = 'Nepodařilo se načíst kurz';
-  });
-
-
-const produkt3Kusy = document.getElementById('produkt3-kusy');
-const celkem = document.getElementById('celkem');
-const celkemBezDPH = document.getElementById('bez-dph');
-const dph = 21;
-const celkovaCena = 0;
-
-function aktualizovatCenu() {
-  const cenaProdukt3 = 300;
-  const pocetProdukt3 = parseInt(produkt3Kusy.value);
-
-  const celkovaCena = pocetProdukt3 * cenaProdukt3;
-  const cenaBezDPH = celkovaCena / (1 + dph / 100);
-  const cenaSDPH = celkovaCena * (1 + dph / 100);
-
-  const selectedCurrency = document.getElementById('mena').value;
-  const exchangeRate = exchangeRates[selectedCurrency];
-  const totalPrice = celkovaCena * exchangeRate;
-
-  celkem.innerHTML = celkovaCena;
-  celkemBezDPH.innerHTML = cenaBezDPH.toFixed(2);
-  currencyDisplay.innerHTML = totalPrice.toFixed(2) + ' ' + selectedCurrency;
-
-}
-
-function zobrazitRekapitulaci() {
-  window.location.href = "summary.html";
-}
-
-produkt3Kusy.addEventListener('input', aktualizovatCenu);
-
-</script>
-
-  </body>
 </html>
